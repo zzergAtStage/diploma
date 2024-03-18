@@ -1,0 +1,103 @@
+@startuml
+
+
+class EarthquakeCityMap [[java:module4.EarthquakeCityMap]] {
+	-{static} serialVersionUID: long
+	-{static} offline: boolean
+	+{static} mbTilesString: String
+	-earthquakesURL: String
+	-cityFile: String
+	-countryFile: String
+	-map: UnfoldingMap
+	-cityMarkers: List<Marker>
+	-quakeMarkers: List<Marker>
+	-countryMarkers: List<Marker>
+	+setup(): void
+	+draw(): void
+	-addKey(): void
+	-isLand(earthquake: PointFeature): boolean
+	-printQuakes(): void
+	-isInCountry(earthquake: PointFeature, country: Marker): boolean
+}
+
+class Feature {
+ -properties: HashMap<String,Object>
+}
+
+class PointFeature extends Feature{
+ -location: Location
+}
+
+abstract class AbstractMarker{
+
+}
+
+
+class SimplePointMarker {
+}
+
+class SimplePointMarker implements Marker
+class SimplePointMarker extends AbstractMarker
+class AbstractMarker implements Marker
+
+abstract class EarthquakeMarker [[java:module4.EarthquakeMarker]] {
+	#isOnLand: boolean
+	+{static} THRESHOLD_MODERATE: float
+	+{static} THRESHOLD_LIGHT: float
+	+{static} THRESHOLD_INTERMEDIATE: float
+	+{static} THRESHOLD_DEEP: float
+	+{abstract} drawEarthquake(pg: PGraphics, x: float, y: float): void
+	+EarthquakeMarker(feature: PointFeature)
+	+draw(pg: PGraphics, x: float, y: float): void
+	-colorDetermine(pg: PGraphics): void
+	+getMagnitude(): float
+	+getDepth(): float
+	+getTitle(): String
+	+getRadius(): float
+	+isOnLand(): boolean
+}
+
+SimplePointMarker <|-- EarthquakeMarker
+
+class CityMarker [[java:module4.CityMarker]] {
+	+{static} TRI_SIZE: int
+	+CityMarker(location: Location)
+	+CityMarker(city: Feature)
+	+draw(pg: PGraphics, x: float, y: float): void
+	+getCity(): String
+	+getCountry(): String
+	+getPopulation(): float
+}
+
+CommonMarker <|-- CityMarker
+
+class LandQuakeMarker [[java:module4.LandQuakeMarker]] {
+	+LandQuakeMarker(quake: PointFeature)
+	+drawEarthquake(pg: PGraphics, x: float, y: float): void
+	+getCountry(): String
+}
+
+EarthquakeMarker <|-- LandQuakeMarker
+
+
+
+class OceanQuakeMarker [[java:module4.OceanQuakeMarker]] {
+	+OceanQuakeMarker(quake: PointFeature)
+	+drawEarthquake(pg: PGraphics, x: float, y: float): void
+}
+EarthquakeMarker <|-- OceanQuakeMarker
+
+
+
+
+PApplet <|-- EarthquakeCityMap
+EarthquakeCityMap::cityMarkers -> Marker
+EarthquakeCityMap::quakeMarkers -> Marker
+EarthquakeCityMap::countryMarkers -> Marker
+ 
+Interface Marker <<de.fhpotsdam.unfolding.marker>>
+class PApplet {
+}
+
+
+@enduml
