@@ -1,4 +1,4 @@
-package diploma;
+package diploma.models;
 
 
 import de.fhpotsdam.unfolding.geo.Location;

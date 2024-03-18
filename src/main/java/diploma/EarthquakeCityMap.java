@@ -13,6 +13,7 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.MultiMarker;
 import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.utils.MapUtils;
+import diploma.models.*;
 import parsing.ParseFeed;
 import processing.core.PApplet;
 
@@ -57,7 +58,7 @@ public class EarthquakeCityMap extends PApplet {
 	// A List of country markers
 	private List<Marker> countryMarkers;
 	
-	// NEW IN MODULE 5
+
 	private CommonMarker lastSelected;
 	private CommonMarker lastClicked;
 	//private Map<Class<? extends CommonMarker>, String> classMap;
