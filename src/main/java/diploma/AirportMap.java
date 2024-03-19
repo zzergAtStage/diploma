@@ -68,7 +68,6 @@ public class AirportMap extends PApplet {
 		List<ShapeFeature> routes = ParseFeed.parseRoutes(this, "routes.dat");
 		routeList = new ArrayList<Marker>();
 		fillRoutes(airports, routes);
-		System.out.println("routeList size: " + routeList.size());
 		map.addMarkers(airportList);
 		map.addMarkers(routeList);
 		

@@ -1,16 +1,88 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.zergatstage</groupId>
     <artifactId>diploma-java</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <name>diploma-java</name>
+    <url>http://maven.apache.org</url>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zergatstage</groupId>
+            <artifactId>diploma-java</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uscd-jars</groupId>
+            <artifactId>unfolding</artifactId>
+            <version>0.9.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/unfolding.0.9.7-uscd.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>processing-core</groupId>
+            <artifactId>processing-core</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/core.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>processing-core</groupId>
+            <artifactId>processing-core-docs</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/core-3.3.7-javadoc.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>java-core</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/log4j-1.2.15.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>processing-core</groupId>
+            <artifactId>json4processing</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/json4processing.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>gluegen-rt</groupId>
+            <artifactId>gluegen-rt</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/gluegen-rt.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>gluegen-rt</groupId>
+            <artifactId>gluegen-rt-natives-macosx-universal</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/gluegen-rt-natives-windows-amd64.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jogl-all</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>1.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/./lib/jogl-all.jar</systemPath>
+        </dependency>
+    </dependencies>
 </project>

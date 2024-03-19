@@ -30,7 +30,7 @@ public class LifeExpectancy extends PApplet {
 
 	public void setup() {
 		size(800, 600, OPENGL);
-		map = new UnfoldingMap(this, 50, 50, 700, 500, new Google.GoogleMapProvider());
+		map = new UnfoldingMap(this, 50, 50, 700, 500/*, new Google.GoogleMapProvider()*/);
 		MapUtils.createDefaultEventDispatcher(this, map);
 
 		// Load lifeExpectancy data
@@ -41,8 +41,7 @@ public class LifeExpectancy extends PApplet {
 		countries = GeoJSONReader.loadData(this, "countries.geo.json");
 		countryMarkers = MapUtils.createSimpleMarkers(countries);
 		map.addMarkers(countryMarkers);
-		System.out.println(countryMarkers.get(0).getId());
-		
+
 		// Country markers are shaded according to life expectancy (only once)
 		shadeCountries();
 	}
@@ -59,7 +58,6 @@ public class LifeExpectancy extends PApplet {
 		for (Marker marker : countryMarkers) {
 			// Find data for country of the current marker
 			String countryId = marker.getId();
-			System.out.println(lifeExpMap.containsKey(countryId));
 			if (lifeExpMap.containsKey(countryId)) {
 				float lifeExp = lifeExpMap.get(countryId);
 				// Encode value as brightness (values range: 40-90)
