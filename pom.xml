@@ -84,5 +84,10 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/./lib/jogl-all.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+        </dependency>
     </dependencies>
 </project>
