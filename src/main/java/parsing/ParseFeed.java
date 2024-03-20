@@ -12,15 +12,20 @@ import de.fhpotsdam.unfolding.geo.Location;
 import processing.core.PApplet;
 import processing.data.XML;
 
+/**
+ * The helper class to provide data, which will be showed on the map
+ * Data sources as well as schemas is being used from
+ */
+
 public class ParseFeed {
 
 
-	/*
+	/**
 	 * This method is to parse a GeoRSS feed corresponding to earthquakes around
 	 * the globe.
-	 * 
-	 * @param p - PApplet being used
-	 * @param fileName - file name or URL for data source
+	 * @param p PApplet being used
+	 * @param fileName file name or URL for data source
+	 * @return List of "points"
 	 */
 	public static List<PointFeature> parseEarthquake(PApplet p, String fileName) {
 		List<PointFeature> features = new ArrayList<PointFeature>();
@@ -29,12 +34,12 @@ public class ParseFeed {
 		// Get all items
 		XML[] itemXML = rss.getChildren("entry");
 		PointFeature point;
-		
+
 		for (int i = 0; i < itemXML.length; i++) {
-			
+
 				// get location and create feature
 				Location location = getLocationFromPoint(itemXML[i]);
-				
+
 				// if successful create PointFeature and add to list
 				if( location != null) {
 					point = new PointFeature(location);
@@ -54,13 +59,13 @@ public class ParseFeed {
 
 				// Sets depth(elevation) if existing
 				float depthVal = getFloatVal(itemXML[i], "georss:elev");
-				
+
 				// NOT SURE ABOUT CHECKING ERR CONDITION BECAUSE 0 COULD BE VALID?
 				// get one decimal place when converting to km
 				int interVal = (int)(depthVal/100);
 				depthVal = (float) interVal/10;
 				point.putProperty("depth", Math.abs((depthVal)));
-				
+
 
 				// Sets age if existing
 				XML[] catXML = itemXML[i].getChildren("category");
@@ -71,7 +76,7 @@ public class ParseFeed {
 						point.putProperty("age", ageStr);
 					}
 				}
-		
+
 
 			}
 		
@@ -79,10 +84,10 @@ public class ParseFeed {
 		}
 
 	
-	/*
+	/**
 	 * Gets location from georss:point tag
 	 * 
-	 * @param XML Node which has point as child
+	 * @param itemXML Node which has point as child
 	 * 
 	 * @return Location object corresponding to point
 	 */
@@ -95,8 +100,8 @@ public class ParseFeed {
 		if (pointXML != null && pointXML.getContent() != null) {
 			String pointStr = pointXML.getContent();
 			String[] latLon = pointStr.split(" ");
-			float lat = Float.valueOf(latLon[0]);
-			float lon = Float.valueOf(latLon[1]);
+			float lat = Float.parseFloat(latLon[0]);
+			float lon = Float.parseFloat(latLon[1]);
 
 			loc = new Location(lat, lon);
 		}
@@ -128,16 +133,15 @@ public class ParseFeed {
 	}
 	
 
-	/*
-	 * This method is to parse a file containing airport information.  
-	 * The file and its format can be found: 
-	 * http://openflights.org/data.html#airport
-	 * 
-	 * It is also included with the UC San Diego MOOC package in the file airports.dat
-	 * 
-	 * @param p - PApplet being used
-	 * @param fileName - file name or URL for data source
-	 */
+	/**
+     * This method is to parse a file containing airport information.
+     * The file and its format can be found:
+     * <a href="http://openflights.org/data.html#airport">...</a>
+     * It is also included with the UC San Diego MOOC package in the file airports.dat
+     *
+     * @param p - PApplet being used
+     * @param fileName - file name or URL for data source
+     */
 	public static List<PointFeature> parseAirports(PApplet p, String fileName) {
 		List<PointFeature> features = new ArrayList<PointFeature>();
 
@@ -151,7 +155,6 @@ public class ParseFeed {
 			String[] columns = row.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
 			
 			// get location and create feature
-			//System.out.println(columns[6]);
 			float lat = Float.parseFloat(columns[6]);
 			float lon = Float.parseFloat(columns[7]);
 			
@@ -168,11 +171,11 @@ public class ParseFeed {
 			
 			// pretty sure IATA/FAA is used in routes.dat
 			// get airport IATA/FAA code
-			if(!columns[4].equals("")) {
+			if(!columns[4].isEmpty()) {
 				point.putProperty("code", columns[4]);
 			}
 			// get airport ICAO code if no IATA
-			else if(!columns[5].equals("")) {
+			else if(!columns[5].isEmpty()) {
 				point.putProperty("code", columns[5]);
 			}
 			
@@ -187,16 +190,15 @@ public class ParseFeed {
 	
 	
 
-	/*
-	 * This method is to parse a file containing airport route information.  
-	 * The file and its format can be found: 
-	 * http://openflights.org/data.html#route
-	 * 
-	 * It is also included with the UC San Diego MOOC package in the file routes.dat
-	 * 
-	 * @param p - PApplet being used
-	 * @param fileName - file name or URL for data source
-	 */
+	/**
+     * This method is to parse a file containing airport route information.
+     * The file and its format can be found:
+     * <a href="http://openflights.org/data.html#route">...</a>
+     * It is also included with the UC San Diego MOOC package in the file routes.dat
+     *
+     * @param p - PApplet being used
+     * @param fileName - file name or URL for data source
+     */
 	public static List<ShapeFeature> parseRoutes(PApplet p, String fileName) {
 		List<ShapeFeature> routes = new ArrayList<ShapeFeature>();
 		
@@ -219,12 +221,8 @@ public class ParseFeed {
 				routes.add(route);
 			}
 		}
-			
-		
 		return routes;
-		
-		
-		
+
 	}
 	
 	

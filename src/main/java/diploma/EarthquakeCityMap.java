@@ -22,8 +22,7 @@ import java.util.List;
 /**
  * EarthquakeCityMap
  * Based on
- * Author: UC San Diego Intermediate Software Development MOOC team
- *
+ * UC San Diego Intermediate Software Development MOOC team
  * @author Sergei Brusentsov
  * Date: 01 02 2024
  */

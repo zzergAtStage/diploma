@@ -14,9 +14,6 @@ import java.util.Arrays;
 
 public class LoginWindow<T extends JFrame> extends JDialog implements LoginService {
 
-
-
-
     @Override
     public User getCurrentUser() {
         return currentUser;
