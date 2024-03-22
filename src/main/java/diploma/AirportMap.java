@@ -11,8 +11,8 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.marker.SimpleLinesMarker;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import de.fhpotsdam.unfolding.geo.Location;
-import diploma.models.AirportMarker;
-import diploma.models.CommonMarker;
+import application.models.AirportMarker;
+import application.models.CommonMarker;
 import parsing.ParseFeed;
 import processing.core.PApplet;
 

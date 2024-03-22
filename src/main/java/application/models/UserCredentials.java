@@ -1,4 +1,4 @@
-package diploma.models;
+package application.models;
 
 
 public class UserCredentials {

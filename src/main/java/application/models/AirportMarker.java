@@ -1,4 +1,4 @@
-package diploma.models;
+package application.models;
 
 import java.util.List;
 

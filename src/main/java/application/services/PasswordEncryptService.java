@@ -9,6 +9,6 @@ public interface PasswordEncryptService {
      * @param password String raw pass
      * @return String hashed pass
      */
-    String hashPassword(String password);
+    String hashPassword(char[] password);
 
 }

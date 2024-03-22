@@ -1,4 +1,4 @@
-package application;
+package diploma;
 
 import processing.core.PApplet;
 

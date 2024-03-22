@@ -1,8 +1,11 @@
-package application;
+package diploma;
 
-import diploma.AirportMap;
-import diploma.EarthquakeCityMap;
-import diploma.LifeExpectancy;
+import application.UserRepository;
+import application.models.NoUsersRegistered;
+import application.services.AuthenticationService;
+import application.services.AuthenticationServiceImpl;
+import application.services.Publisher;
+import application.services.UserEventListener;
 import processing.core.PApplet;
 
 import javax.swing.*;
@@ -10,7 +13,9 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MySwingApp extends JFrame {
+public class DesktopMonitoringApp extends JFrame implements UserEventListener {
+    private final UserRepository userRepository =  new UserRepository();
+    private final AuthenticationService authService = AuthenticationServiceImpl.getInstance();
     final static Dimension defaultDimension = new Dimension(1200, 900);
     final static Dimension defaultMapsFrameDimension = new Dimension(900, 700);
     JButton btnMakeWindow;
@@ -21,9 +26,14 @@ public class MySwingApp extends JFrame {
     JButton btnEarthquakes;
 
     JButton btnCountriesLiveExpectancies;
+    protected JLabel userStatusLabel;
+
     Map<String, ControlFrame> cfList = new HashMap<>();
 
-    public MySwingApp() {
+    public DesktopMonitoringApp() {
+        Publisher.getInstance().subscribe(Publisher.LOGON, this);
+        Publisher.getInstance().subscribe(Publisher.LOGOUT, this);
+
         //configure screens
         SwingUtilities.invokeLater(() -> {
             try {
@@ -34,6 +44,7 @@ public class MySwingApp extends JFrame {
                      IllegalAccessException e) {
                 e.printStackTrace();
             }
+
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] screens = ge.getScreenDevices();
             GraphicsDevice defaultScreen;
@@ -51,19 +62,35 @@ public class MySwingApp extends JFrame {
             // Create a "User Login" menu item
             JMenuItem userLoginMenuItem = new JMenuItem("User Login");
             userLoginMenuItem.addActionListener(e -> {
-                //TODO: Handle user login action here (replace with your logic)
+               new LoginWindow<>(this);
+            });
+            // Create a "User Login" menu item
+            JMenuItem userLogoffMenuItem = new JMenuItem("User Logoff");
+            userLogoffMenuItem.addActionListener(e -> {
 
+                try {
+                    authService.logOffUser(userRepository.getFirstUser());
+                } catch (NoUsersRegistered ex) {
+                    new JDialog(this,true);
+                }
             });
 
             // Add the menu item to the "File" menu
             fileMenuItem.add(userLoginMenuItem);
+            fileMenuItem.add(userLogoffMenuItem);
 
             // Add the "File" menu to the menu bar
             menuBar.add(fileMenuItem);
 
             // Set the menu bar for the frame
             setJMenuBar(menuBar);
-
+            //user state
+            userStatusLabel = new JLabel("Пользователь не авторизован");
+            userStatusLabel.setForeground(Color.RED);
+            userStatusLabel.setVisible(true);
+            JPanel notificationPane = new JPanel();
+            notificationPane.add(userStatusLabel);
+            add(notificationPane,BorderLayout.NORTH);
             setPreferredSize(defaultDimension);
 
             this.setLayout(new BorderLayout());
@@ -97,9 +124,6 @@ public class MySwingApp extends JFrame {
             gbc.gridy = 2;
             btnCountriesLiveExpectancies = createButtons(buttonsPanel, gbc,
                     "Switch live expectancy app", 2);
-
-
-
 
             // Create a dropdown field
             JComboBox<String> dropdown = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3"});
@@ -138,7 +162,7 @@ public class MySwingApp extends JFrame {
     }
 
     public static void main(String[] args) {
-        new MySwingApp();
+        new DesktopMonitoringApp();
     }
 
     private JButton createButtons(JPanel buttonsPanel, GridBagConstraints gridBagConstraints,
@@ -153,5 +177,16 @@ public class MySwingApp extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(map, BorderLayout.CENTER);
         return panel;
+    }
+
+    @Override
+    public void update(String updateType, String message) {
+        if (updateType.equals(Publisher.LOGON)){
+            userStatusLabel.setText(message);
+            userStatusLabel.setVisible(false);
+        } else {
+            userStatusLabel.setText(message);
+            userStatusLabel.setVisible(true);
+        }
     }
 }

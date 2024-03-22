@@ -1,4 +1,4 @@
-package diploma.models;
+package application.models;
 
 import de.fhpotsdam.unfolding.data.PointFeature;
 import processing.core.PConstants;
