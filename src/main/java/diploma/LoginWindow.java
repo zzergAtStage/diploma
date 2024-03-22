@@ -1,5 +1,6 @@
 package diploma;
 
+import application.UserRepository;
 import application.services.AuthenticationServiceImpl;
 import application.models.User;
 import sun.net.ConnectionResetException;
@@ -12,7 +13,7 @@ import java.awt.event.FocusListener;
 
 public class LoginWindow<T extends JFrame> extends JDialog {
 
-
+    private final UserRepository userRepository =  UserRepository.getInstance();
     private User currentUser;
     private JPanel contentPane;
 
@@ -27,10 +28,6 @@ public class LoginWindow<T extends JFrame> extends JDialog {
 //        dialog.setVisible(true);
 //        System.exit(0);
 //    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
 
     private void initialize(T c) {
         setLayout(new GridLayout(4, 2));
@@ -64,7 +61,7 @@ public class LoginWindow<T extends JFrame> extends JDialog {
         contentPane.add(proceedLogin);
         contentPane.add(cancelLogin);
         proceedLogin.addActionListener(e -> {
-            this.currentUser = new User(userId.getText(), userPassword.getPassword());
+            this.currentUser = userRepository.addUser(new User(userId.getText(), userPassword.getPassword()));
             this.currentUser.setAuthenticated(false);
             boolean authResult = false;
             String dialogHeader = "Connection error";
@@ -75,7 +72,6 @@ public class LoginWindow<T extends JFrame> extends JDialog {
             } catch (ConnectionResetException exception) {
                 dialogHeader = "Connection error";
             }
-
 
             int jOptionPaneTypeInfo = JOptionPane.ERROR_MESSAGE;
             if (authResult) {

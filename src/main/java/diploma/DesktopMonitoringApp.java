@@ -12,9 +12,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DesktopMonitoringApp extends JFrame implements UserEventListener {
-    private final UserRepository userRepository =  new UserRepository();
+    private final UserRepository userRepository =  UserRepository.getInstance();
     private final AuthenticationService authService = AuthenticationServiceImpl.getInstance();
     final static Dimension defaultDimension = new Dimension(1200, 900);
     final static Dimension defaultMapsFrameDimension = new Dimension(900, 700);
@@ -42,7 +44,7 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
                         UIManager.getSystemLookAndFeelClassName());
             } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException |
                      IllegalAccessException e) {
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
             }
 
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -71,7 +73,11 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
                 try {
                     authService.logOffUser(userRepository.getFirstUser());
                 } catch (NoUsersRegistered ex) {
-                    new JDialog(this,true);
+                    String dialogHeader = "Ошибка пользовательских данных";
+                    String dialogMessage = "Пользователь не прошел авторизацию";
+                    int jOptionPaneTypeInfo = JOptionPane.INFORMATION_MESSAGE;
+                    JOptionPane.showMessageDialog(this,
+                            dialogMessage, dialogHeader, jOptionPaneTypeInfo);
                 }
             });
 
@@ -90,10 +96,11 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
             userStatusLabel.setVisible(true);
             JPanel notificationPane = new JPanel();
             notificationPane.add(userStatusLabel);
-            add(notificationPane,BorderLayout.NORTH);
-            setPreferredSize(defaultDimension);
+            getContentPane().add(notificationPane,BorderLayout.NORTH);
 
-            this.setLayout(new BorderLayout());
+
+            //this.setLayout(new BorderLayout());
+            setPreferredSize(defaultDimension);
             // create a tab base
             cfList.put("Earthquakes",
                     ControlFrame.create(this, "Earthquakes", defaultMapsFrameDimension,
@@ -135,7 +142,7 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
             gbc.anchor = GridBagConstraints.CENTER; // Align component in the center
             buttonsPanel.add(dropdown, gbc);
 
-            add(buttonsPanel, BorderLayout.WEST);
+            getContentPane().add(buttonsPanel, BorderLayout.WEST);
 
             tabbedPane = new JTabbedPane();
             JPanel earthquakePanel = createMapPanel(cfList.get("Earthquakes").getPapplet());
@@ -148,7 +155,7 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
             JPanel liveExpectancy = createMapPanel(cfList.get("Live").getPapplet());
             tabbedPane.addTab("Live", liveExpectancy);
 
-            add(tabbedPane, BorderLayout.CENTER);
+            getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
             this.setLocation(defaultScreen.getDefaultConfiguration().getBounds().getLocation());
             setDefaultLookAndFeelDecorated(true);

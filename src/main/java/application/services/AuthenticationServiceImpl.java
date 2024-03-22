@@ -104,6 +104,4 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         Publisher.getInstance().notify(Publisher.LOGOUT,"User is logged off");
         firstUser.setAuthenticated(false);
     }
-
-
 }

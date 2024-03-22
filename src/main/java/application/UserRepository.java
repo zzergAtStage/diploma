@@ -6,18 +6,27 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Getter
 public class UserRepository {
-    private List<User> userRepo;
+    private final List<User> userRepo;
+    private static UserRepository userRepository;
 
-
-    public UserRepository(){
+    private UserRepository(){
         this.userRepo = new ArrayList<>();
     }
-    public boolean addUser(User user) {
-        return userRepo.add(user);
+
+    public static synchronized UserRepository getInstance(){
+        if (userRepository == null){
+            userRepository = new UserRepository();
+        }
+        return userRepository;
+    }
+    public User addUser(User user) {
+        userRepo.add(user);
+        return user;
     }
 
     public User getFirstUser() throws NoUsersRegistered {
