@@ -2,6 +2,7 @@ package diploma;
 
 import application.UserRepository;
 import application.models.NoUsersRegistered;
+import application.models.User;
 import application.services.AuthenticationService;
 import application.services.AuthenticationServiceImpl;
 import application.services.Publisher;
@@ -12,11 +13,19 @@ import processing.core.PApplet;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/** Основной класс десктопного приложения.
+ *  Позволяет управлять пользователем, авторизацией на WEB-сервисе и отображать
+ *  карты разного типа.
+ *
+ */
 public class DesktopMonitoringApp extends JFrame implements UserEventListener {
     private final UserRepository userRepository =  UserRepository.getInstance();
     private final AuthenticationService authService = AuthenticationServiceImpl.getInstance();
@@ -35,6 +44,7 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
     Map<String, ControlFrame> cfList = new HashMap<>();
 
     public DesktopMonitoringApp() {
+        //subscribe app to publisher
         Publisher.getInstance().subscribe(Publisher.LOGON, this);
         Publisher.getInstance().subscribe(Publisher.LOGOUT, this);
 
@@ -61,6 +71,7 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
 
             // Create a "File" menu
             JMenu fileMenuItem = new JMenu("File");
+            JMenu userAuthority = new JMenu("Управление пользователем");
 
             // Create a "User Login" menu item
             JMenuItem userLoginMenuItem = new JMenuItem("User Login");
@@ -81,18 +92,45 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
                             dialogMessage, dialogHeader, jOptionPaneTypeInfo);
                 }
             });
-            JMenuItem closeApplication = new JMenuItem("Exit");
-            closeApplication.addActionListener(e -> {
+            JMenuItem closeAppMenuItem = new JMenuItem("Exit");
+            closeAppMenuItem.addActionListener(e -> {
+                try {
+                    User user = userRepository.getFirstUser();
+                    authService.logOffUser(user);
+                } catch (NoUsersRegistered ex) {
+                    ;
+                }
+                dispose();
 
             });
+            JMenuItem userAuthorityItem = new JMenuItem("Управление пользователем");
+            // Create an ActionListener for the menu item
+            userAuthorityItem.addActionListener(e -> {
+                // Create the confirmation dialog
+                int dialogResult = JOptionPane.showConfirmDialog(this,
+                        "Для управления ролью пользователя перейти на внешний сайт?",
+                        "Управление правами пользователя",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
 
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    // User wants to open external site
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://localhost:8443/"));
+                    } catch (IOException | URISyntaxException ex) {
+                        // Handle exception if opening URL fails
+                        JOptionPane.showMessageDialog(null, "Невозможно открыть внешний сайт.", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
             // Add the menu item to the "File" menu
             fileMenuItem.add(userLoginMenuItem);
             fileMenuItem.add(userLogoffMenuItem);
-
+            fileMenuItem.add(closeAppMenuItem);
+            userAuthority.add(userAuthorityItem);
             // Add the "File" menu to the menu bar
             menuBar.add(fileMenuItem);
-
+            menuBar.add(userAuthority);
             // Set the menu bar for the frame
             setJMenuBar(menuBar);
             //user state
@@ -121,45 +159,45 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
             JPanel buttonsPanel = new JPanel();
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.fill = GridBagConstraints.VERTICAL;
-            gbc.anchor = GridBagConstraints.WEST;
+            gbc.anchor = GridBagConstraints.NORTHWEST;
             gbc.insets = new Insets(5, 5, 5, 5);
 
             GridBagLayout gbl = new GridBagLayout();
             buttonsPanel.setLayout(gbl);
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            btnEarthquakes = createButtons(buttonsPanel, gbc, "Switch Earthquake app", 0);
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            btnAirports = createButtons(buttonsPanel, gbc, "Switch Airports app", 1);
-            gbc.gridx = 0;
-            gbc.gridy = 2;
-            btnCountriesLiveExpectancies = createButtons(buttonsPanel, gbc,
-                    "Switch live expectancy app", 2);
+
 
             // Create a dropdown field
-            JComboBox<String> dropdown = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3"});
+            JComboBox<String> dropdown = new JComboBox<>(new String[]{"Все", "Наземные землетрясения",
+                    "Подводные землетрясения"});
+            dropdown.addActionListener(e -> {
+                int selectedItem = dropdown.getSelectedIndex();
+                EarthquakeCityMap map = (EarthquakeCityMap) cfList.get("Earthquakes").getPapplet();
+                map.setExternalFilter(selectedItem);
+            });
+
 
             // Add dropdown field in the middle
             gbc.gridx = 0;
-            gbc.gridy = 3;
+            gbc.gridy = 0;
             gbc.gridwidth = 2; // Span across two columns
-            gbc.anchor = GridBagConstraints.CENTER; // Align component in the center
+            gbc.anchor = GridBagConstraints.NORTH; // Align component in the center
             buttonsPanel.add(dropdown, gbc);
 
             getContentPane().add(buttonsPanel, BorderLayout.WEST);
 
             tabbedPane = new JTabbedPane();
             JPanel earthquakePanel = createMapPanel(cfList.get("Earthquakes").getPapplet());
-            tabbedPane.addTab("Earthquakes", earthquakePanel);
+            tabbedPane.addTab("Карта землетрясений", earthquakePanel);
             // Add Airport Map
             JPanel airportPanel = createMapPanel(cfList.get("AirportMap").getPapplet());
-            tabbedPane.addTab("Airports", airportPanel);
+
+            tabbedPane.addTab("Аэропорты мира и их маршруты", airportPanel);
 
             // Live expectancy map
             JPanel liveExpectancy = createMapPanel(cfList.get("Live").getPapplet());
-            tabbedPane.addTab("Live", liveExpectancy);
 
+            tabbedPane.addTab("Средняя продолжительность жизни", liveExpectancy);
+            setTabbedEnabled(false);
             getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
             this.setLocation(defaultScreen.getDefaultConfiguration().getBounds().getLocation());
@@ -171,6 +209,12 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
 
         });
 
+    }
+
+    private void setTabbedEnabled(boolean setAs) {
+        tabbedPane.setEnabledAt(0, true);
+        tabbedPane.setEnabledAt(1, setAs);
+        tabbedPane.setEnabledAt(2, setAs);
     }
 
     public static void main(String[] args) {
@@ -197,9 +241,11 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
         if (updateType.equals(Publisher.LOGON)){
             userStatusLabel.setText(message);
             userStatusLabel.setVisible(false);
+            setTabbedEnabled(true);
         } else {
             userStatusLabel.setText(message);
             userStatusLabel.setVisible(true);
+            setTabbedEnabled(false);
         }
     }
 }

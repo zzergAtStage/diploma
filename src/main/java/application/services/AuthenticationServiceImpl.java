@@ -86,7 +86,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             int responseCode = connection.getResponseCode();
 
             logger.debug("Status {}", responseCode);
-            Publisher.getInstance().notify(Publisher.LOGON,"User is logged");
             // check response
             return (responseCode >= 200 && responseCode < 300);
 

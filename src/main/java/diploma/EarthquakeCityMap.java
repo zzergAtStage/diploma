@@ -53,7 +53,10 @@ public class EarthquakeCityMap extends PApplet {
 
     private CommonMarker lastSelected;
     private CommonMarker lastClicked;
-    //private Map<Class<? extends CommonMarker>, String> classMap;
+
+
+
+    private int externalFilter; // known values 0 - all, 1 - earthquake, 2 - Ocean quakes
 
     public static void main(String[] args) {
         PApplet.main("diploma.EarthquakeCityMap");
@@ -243,7 +246,13 @@ public class EarthquakeCityMap extends PApplet {
             }
         }
     }
+    private void hideAllMarkersByExternalFilter(){
 
+        for (Marker marker: quakeMarkers){
+            if (marker.getClass() == LandQuakeMarker.class ) marker.setHidden(externalFilter == 2);
+            if (marker.getClass() ==OceanQuakeMarker.class ) marker.setHidden(externalFilter == 1);
+        }
+    }
     private Marker getMarkerUnderClick(List<? extends Marker> markers) {
         for (Marker marker : markers) {
             if (marker.isInside(map, mouseX, mouseY)
@@ -393,5 +402,11 @@ public class EarthquakeCityMap extends PApplet {
             return true;
         }
         return false;
+    }
+
+    public void setExternalFilter(int externalFilter) {
+        this.externalFilter = externalFilter;
+        if (externalFilter == 0 ) unhiddenMarkers();
+        hideAllMarkersByExternalFilter();
     }
 }

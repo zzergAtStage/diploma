@@ -3,6 +3,7 @@ package diploma;
 import application.UserRepository;
 import application.services.AuthenticationServiceImpl;
 import application.models.User;
+import application.services.Publisher;
 import sun.net.ConnectionResetException;
 
 import javax.swing.*;
@@ -79,6 +80,7 @@ public class LoginWindow<T extends JFrame> extends JDialog {
                 dialogMessage = "Вам предоставлен доступ к полному спектру данных сервера.";
                 jOptionPaneTypeInfo = JOptionPane.INFORMATION_MESSAGE;
                 this.currentUser.setAuthenticated(true);
+                Publisher.getInstance().notify(Publisher.LOGON,"User is logged");
                 dispose();
             }
             JOptionPane.showMessageDialog(LoginWindow.this,
