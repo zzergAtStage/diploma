@@ -6,6 +6,8 @@ import application.services.AuthenticationService;
 import application.services.AuthenticationServiceImpl;
 import application.services.Publisher;
 import application.services.UserEventListener;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import processing.core.PApplet;
 
 import javax.swing.*;
@@ -41,12 +43,11 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
             try {
                 // Set System L&F
                 UIManager.setLookAndFeel(
-                        UIManager.getSystemLookAndFeelClassName());
-            } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException |
-                     IllegalAccessException e) {
+                        new FlatIntelliJLaf());
+            } catch (UnsupportedLookAndFeelException e) {
                 Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
             }
-
+            UIManager.put( "TabbedPane.showTabSeparators", true );
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             GraphicsDevice[] screens = ge.getScreenDevices();
             GraphicsDevice defaultScreen;
@@ -79,6 +80,10 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
                     JOptionPane.showMessageDialog(this,
                             dialogMessage, dialogHeader, jOptionPaneTypeInfo);
                 }
+            });
+            JMenuItem closeApplication = new JMenuItem("Exit");
+            closeApplication.addActionListener(e -> {
+
             });
 
             // Add the menu item to the "File" menu
@@ -169,6 +174,7 @@ public class DesktopMonitoringApp extends JFrame implements UserEventListener {
     }
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         new DesktopMonitoringApp();
     }
 
