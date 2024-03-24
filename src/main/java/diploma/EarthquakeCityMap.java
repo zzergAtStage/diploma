@@ -19,8 +19,7 @@ import java.util.List;
 
 /**
  * EarthquakeCityMap
- * Based on
- * UC San Diego Intermediate Software Development MOOC team
+ * Based on USDC
  * @author Sergei Brusentsov
  * Date: 01 02 2024
  */
@@ -90,7 +89,7 @@ public class EarthquakeCityMap extends PApplet {
 
         //     STEP 3: read in earthquake RSS feed
         List<PointFeature> earthquakes = ParseFeed.parseEarthquake(this, earthquakesURL);
-        quakeMarkers = new ArrayList<Marker>();
+        quakeMarkers = new ArrayList<>();
 
         for (PointFeature feature : earthquakes) {
             //check if LandQuake
@@ -123,19 +122,6 @@ public class EarthquakeCityMap extends PApplet {
                 .sorted()
                 .toArray(Marker[]::new);
 
-        //traditional insertion sorting
-//
-//		Object[] markers = quakeMarkers.toArray();
-//		for (int i = 1; i < markers.length; i++) {
-//			int currPosition = i;
-//
-//			while (currPosition > 0 &&
-//					(((EarthquakeMarker) markers[currPosition]).compareTo(((EarthquakeMarker)markers[currPosition - 1])) < 0)) {
-//				swap(markers, currPosition, currPosition - 1);
-//				currPosition -= 1;
-//			}
-//
-//		}
 
         //choice count of items to be printed
         int itemsToOutput = (numToPrint < markers.length) ? numToPrint : markers.length;

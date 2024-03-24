@@ -18,6 +18,10 @@ public class UserRepository {
         this.userRepo = new ArrayList<>();
     }
 
+    /**
+     * The main repository to hold user information
+     * @return Singleton instance of UserRepository
+     */
     public static synchronized UserRepository getInstance(){
         if (userRepository == null){
             userRepository = new UserRepository();

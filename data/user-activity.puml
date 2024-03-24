@@ -1,0 +1,48 @@
+@startuml
+title Sequence Diagram: User Interaction with EarthquakeMap
+
+actor User as U
+participant EarthquakeMap as EM
+participant EatthquakeServer as ES
+participant InfoServices as IS
+participant Admin as A
+
+activate EM
+
+U -> EM: Launch EarthquakeMap
+activate U
+activate EM
+
+U -> EM: Perform Authorization
+activate EM
+
+EM -> ES: Send HTTP Authorization Request
+activate ES
+
+ES -> IS: Check User Rights
+activate IS
+IS --> ES: Return Data based on Subscription Type
+deactivate IS
+
+ES --> EM: Return Data
+deactivate ES
+
+deactivate EM
+U -> EM: Call Deauthorization Function
+activate EM
+
+EM -> ES: Send Deauthorization Request
+activate ES
+
+ES -> A: Log Deauthorization Event
+activate A
+A --> ES: Confirmation
+deactivate A
+
+ES --> EM: Confirmation
+deactivate ES
+
+deactivate EM
+deactivate U
+
+@enduml
