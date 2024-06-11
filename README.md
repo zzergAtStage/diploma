@@ -1,3 +1,4 @@
+
 # Earthquake Monitoring Desktop Application
 
 ## Overview
@@ -12,7 +13,7 @@ The Earthquake Monitoring Desktop Application is a Java-based program designed t
 - **User Roles**: Differentiated access levels for authenticated and non-authenticated users.
 
 ## Technologies Used
-![Screenshot 2024-06-11 at 13 27 46](https://github.com/zzergAtStage/diploma/assets/89431263/d6baa9a3-deda-4337-b717-05253140da24)
+![Screenshot 2024-06-11 at 13 28 55](https://github.com/zzergAtStage/diploma/assets/89431263/c2f6fdc8-b7bc-4c76-8ca7-2bee151afb44)
 
 - **Java**: Core programming language.
 - **Swing**: For GUI development.
