@@ -27,5 +27,13 @@ The Earthquake Monitoring Desktop Application is a Java-based program designed t
   ```bash cd earthquake-monitoring-desktop```
 
 3. Run the application:
-   ```bash javac -d bin src/**/*.java  /
-   java -cp bin diploma.LoginWindow```
+   ```
+   javac -d bin src/**/*.java  /
+   java -cp bin diploma.LoginWindow  
+   ```
+
+## Requirements
+Java 8 or later: Ensure you have the latest version of Java installed.
+Internet Connection: For fetching real-time earthquake data.
+### Contact
+For any questions or issues, please contact @zzergAtStage
